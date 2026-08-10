@@ -1,4 +1,4 @@
-# 🛰️ NOC Terminal Monitoring Dashboard
+# 🛰️ Sathubs LLC NOC Terminal Monitoring Dashboard
 
 A free, live, web-based dashboard built with **Python + Streamlit** that reads
 satellite terminal data directly from Google Sheets, combines multiple tabs,
@@ -33,15 +33,6 @@ Pandas reads that URL directly like a CSV file. Every time the dashboard
 refreshes, it re-downloads the CSV, so it always reflects the sheet's current
 values — completely free, no API key, no quota limits to worry about for
 normal use.
-
-**Requirement:** the sheet must be shared as **"Anyone with the link → Viewer"**
-(File → Share → General access), since Streamlit Community Cloud runs
-anonymously with no Google login.
-
-> If your data is sensitive and you don't want it link-shareable, see
-> **Section 6 — Private sheet option (service account)** at the bottom.
-
----
 
 ## 3. Where to put your Google Sheet URLs / IDs
 
@@ -107,20 +98,8 @@ did load.
 
 ---
 
-## 5. Run it locally first (recommended before deploying)
 
-```bash
-cd noc-dashboard
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-This opens `http://localhost:8501` in your browser. Confirm the KPI cards,
-charts, and tables look right using your real sheet data before deploying.
-
----
-
-## 6. Deploy for free — Streamlit Community Cloud
+##  Deploy for free — Streamlit Community Cloud
 
 This gives you a permanent public URL like `https://your-app.streamlit.app`
 that your boss/team can open in any browser, on any device, with zero setup.
@@ -184,32 +163,3 @@ charts, and table all reflect the new status automatically.
 
 ---
 
-## 8. Private sheet option (optional, still free)
-
-If you'd rather not make the sheet link-shareable, you can use a free Google
-**service account** instead of the CSV export method:
-
-1. Create a free Google Cloud project → enable the **Google Sheets API**.
-2. Create a **Service Account**, generate a JSON key.
-3. Share your Google Sheet with the service account's email address
-   (found inside the JSON key) as **Viewer**.
-4. Add `gspread` and `google-auth` to `requirements.txt`.
-5. Store the JSON key contents in Streamlit Cloud's **Secrets** (Settings →
-   Secrets in the Streamlit Cloud dashboard) — never commit the key file to
-   GitHub.
-6. Replace `fetch_raw_sheet()` in `app.py` with a `gspread` read using the
-   service account credentials from `st.secrets`.
-
-This is more setup but keeps the sheet fully private. Happy to write this
-version out in full if you decide you need it — just ask.
-
----
-
-## 9. Troubleshooting
-
-| Symptom | Likely cause | Fix |
-|---|---|---|
-| "No terminal data could be loaded" | Sheet not shared publicly | Share → Anyone with the link → Viewer |
-| One sheet shows ⚠️ in sidebar | Header row not detected | Confirm that sheet still has a row containing "Customer Name" and "Modem #" |
-| Numbers look wrong / blank | MIR/CIR columns renamed or moved | Check header text still contains "MIR"/"CIR" keywords |
-| Dashboard looks stale | Auto-refresh toggled off | Turn "Auto" toggle on in sidebar, or click "Refresh now" |
