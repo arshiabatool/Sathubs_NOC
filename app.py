@@ -381,19 +381,19 @@ with st.sidebar:
         f_modem_search = st.text_input("Modem Number contains")
 
 # =====================================================================================
-# 5. HEADER WITH LOGO
+# =====================================================================================
+# 5. HEADER WITH SATHUBS LOGO
 # =====================================================================================
 
-# Create header with logo and title
+# Create two columns for logo and title
 col_logo, col_title = st.columns([1, 10])
 
 with col_logo:
-    # Load and display logo from your PC
-    # Make sure to upload the logo file to your GitHub repository
     try:
-        st.image("logo.jpg", width=50)  # Adjust width as needed
+        # Adjust width (50-80px works well for a slim header)
+        st.image("sathubs_logo.png", width=60)
     except:
-        st.markdown("🛰️")  # Fallback icon if logo not found
+        st.markdown("### 🛰️")  # Fallback
 
 with col_title:
     st.markdown(f"# {APP_TITLE}")
@@ -404,7 +404,6 @@ with col_title:
     )
 
 st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
-# =====================================================================================
 # 6. KPI CARDS (Overview)
 # =====================================================================================
 total_terminals = len(df)
