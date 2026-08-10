@@ -43,7 +43,7 @@ SHEET_SOURCES = [
 # Auto-refresh interval choices (seconds) shown in the sidebar
 REFRESH_CHOICES = {"30 seconds": 30, "60 seconds": 60, "2 minutes": 120, "5 minutes": 300}
 
-APP_TITLE = "Sathubs NOC Dashboard"
+APP_TITLE = "NOC Terminal Monitoring Dashboard"
 
 # =====================================================================================
 # 2. PAGE CONFIG + STYLE
@@ -63,22 +63,6 @@ footer {visibility: hidden;}
 .block-container {padding-top: 1.4rem; padding-bottom: 2rem;}
 
 h1, h2, h3 { color: #E6EDF3; }
-
-/* Slim header */
-.block-container {padding-top: 1rem; padding-bottom: 2rem;}
-
-/* Make header bar thinner */
-h1 { 
-    font-size: 1.8rem !important; 
-    margin-top: -0.3rem !important;
-    margin-bottom: 0rem !important;
-}
-
-/* Logo and title alignment */
-[data-testid="column"] {
-    display: flex;
-    align-items: center;
-}
 
 .kpi-card {
     background: linear-gradient(145deg, #12233d, #0c1a2e);
@@ -381,29 +365,32 @@ with st.sidebar:
         f_modem_search = st.text_input("Modem Number contains")
 
 # =====================================================================================
+# 5. HEADER
 # =====================================================================================
-# 5. HEADER WITH SATHUBS LOGO
-# =====================================================================================
-
-# Create two columns for logo and title
-col_logo, col_title = st.columns([1, 10])
-
-with col_logo:
-    try:
-        # Adjust width (50-80px works well for a slim header)
-        st.image("sathubs_logo.png", width=60)
-    except:
-        st.markdown("### 🛰️")  # Fallback
-
-with col_title:
-    st.markdown(f"# {APP_TITLE}")
-    st.markdown(
-        '<span class="status-pill status-live">● LIVE</span>&nbsp;&nbsp;'
-        f'<span style="color:#9fb4cc;">Auto-refreshing every {refresh_seconds}s from Google Sheets</span>',
-        unsafe_allow_html=True,
-    )
-
+st.markdown(f"# 🛰️ {APP_TITLE}")
+st.markdown(
+    '<span class="status-pill status-live">● LIVE</span>&nbsp;&nbsp;'
+    f'<span style="color:#9fb4cc;">Auto-refreshing every {refresh_seconds}s from Google Sheets</span>',
+    unsafe_allow_html=True,
+)
 st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
+
+if load_errors:
+    with st.expander("⚠️ Data loading warnings — click to view", expanded=False):
+        for err in load_errors:
+            st.warning(err)
+
+if df.empty:
+    st.error(
+        "No terminal data could be loaded from any configured sheet.\n\n"
+        "Checklist:\n"
+        "1. Are the Google Sheet IDs / GIDs correct in the CONFIG section of app.py?\n"
+        "2. Is the sheet shared as **Anyone with the link → Viewer**?\n"
+        "3. Does the sheet still contain a header row with 'Customer Name' and 'Modem #'?"
+    )
+    st.stop()
+
+# =====================================================================================
 # 6. KPI CARDS (Overview)
 # =====================================================================================
 total_terminals = len(df)
